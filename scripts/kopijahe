@@ -380,7 +380,7 @@ releaseobtainnewip() {
 	kill -SIGUSR2 "$udhcpcpid"
 	sleep 2
 	ifdown "$waninterface"
-	
+	echo "Percobaan ganti IP Interface: $waninterface." | logger -t "kopijahe $ver"
 	refreshinterface
 }
 
