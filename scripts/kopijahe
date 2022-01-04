@@ -378,6 +378,8 @@ releaseobtainnewip() {
 	udhcpcpid="$(cat /var/run/udhcpc-"$wandevice".pid)"
 	# Matikan layanan DHCP Client dengan parameter SIGUSR2
 	kill -SIGUSR2 "$udhcpcpid"
+	sleep 2
+	ifdown "$waninterface"
 	
 	refreshinterface
 }
