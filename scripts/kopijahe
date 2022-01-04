@@ -359,12 +359,22 @@ refreshinterface() {
 	# Cek apakah digunakan untuk load-balance dan mwan3 terpasang, jika benar, maka:
 	mwan3check
 	if [[ "$(uci -q get kopijahe.@autologin["$multiautologinnum"].loadbalance)" = "yes" ]] && [[ "$checkmwan3" = "ok" ]]; then
+	        # Matikan interface tanpa menggunakan mwan3
+		ifdown "$waninterface"
+		sleep 3
 		# Hidupkan interface tanpa menggunakan mwan3
 		ifup "$waninterface"
+		# Matikan juga interface di mwan3
+		mwan3 ifdown "$waninterface"
+		sleep 3
 		# Hidupkan juga interface di mwan3
 		mwan3 ifup "$waninterface"
+		
 	# Jika tidak, maka:
 	else
+		# Matikan interface tanpa menggunakan mwan3
+		ifdown "$waninterface"
+		sleep 3
 		# Hidupkan interface tanpa menggunakan mwan3
 		ifup "$waninterface"
 	fi
@@ -377,9 +387,7 @@ releaseobtainnewip() {
 	# Cari tahu PID dari layanan DHCP client (udhcpc) yang digunakan
 	udhcpcpid="$(cat /var/run/udhcpc-"$wandevice".pid)"
 	# Matikan layanan DHCP Client dengan parameter SIGUSR2
-	kill -SIGUSR2 "$udhcpcpid"
-	sleep 2
-	ifdown "$waninterface"
+	kill -SIGUSR2 "$udhcpcpid
 	
 	refreshinterface
 }
